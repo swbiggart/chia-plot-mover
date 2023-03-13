@@ -112,7 +112,7 @@ class PlotMover:
         logger.info(f'Rsync thread: Plot file {src_path} rsync\'d, time: {duration} s, avg speed: {speed} MiB/s')
 
         lock.plot.remove(plot_file)
-        lock.dest.remove(rsync_config.dir)
+        lock.dest.remove(rsync_dir)
 
     def main(self):
         while True:
@@ -129,7 +129,7 @@ class PlotMover:
                 time.sleep(self._config.get('debounce'))
                 rsync_config = self._config.get('rsync')
 
-                if rsync_config:
+                if rsync_config and rsync_config['dir'] not in self._lock.dest:
                     thread = threading.Thread(target=self.rsync_plot, args=(self, src_dir, file, rsync_config, size, self._lock))
                     thread.start()
                 else:
