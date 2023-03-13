@@ -96,14 +96,13 @@ class PlotMover:
         rsync_dir = rsync_config['dir'];
 
         self._mutex.acquire()
-        if rsync_config.dir not in self._lock.dest:
+        if rsync_dir not in self._lock.dest:
             lock.plot.append(plot_file)
             lock.dest.append(rsync_dir)
         self._mutex.release()
 
         logger.info(f'Rsync thread: Starting to rsync plot from {src_path} to {rsync_host}:{rsync_dir}')
         start = time.time()
-        shutil.move(src_path, temp_dst_path)
         sysrsync.run(source=src_path,
              destination=rsync_dir,
              destination_ssh=rsync_host,
