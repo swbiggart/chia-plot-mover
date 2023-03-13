@@ -91,6 +91,8 @@ class PlotMover:
         #if os.path.isfile(dst_path):
         #    raise Exception(f'Copy thread: Plot file {dst_path} already exists. Duplicate?')
 
+        logger.info(rsync_config)
+
         self._mutex.acquire()
         if rsync_config.dir not in self._lock.dest:
             lock.plot.append(plot_file)
