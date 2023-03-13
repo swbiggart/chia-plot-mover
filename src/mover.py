@@ -129,9 +129,13 @@ class PlotMover:
                 time.sleep(self._config.get('debounce'))
                 rsync_config = self._config.get('rsync')
 
-                if rsync_config and rsync_config['dir'] not in self._lock.dest:
-                    thread = threading.Thread(target=self.rsync_plot, args=(self, src_dir, file, rsync_config, size, self._lock))
-                    thread.start()
+                if rsync_config:
+                    if rsync_config['dir'] not in self._lock.dest:
+                        thread = threading.Thread(target=self.rsync_plot, args=(self, src_dir, file, rsync_config, size, self._lock))
+                        thread.start()
+                    else:
+                        logger.warning(f'Main thread: No rsync destination available for plot {plot_path}')
+                        time.sleep(self._config.get('sleep'))
                 else:
                     dst_dir = self._look_for_destination(size)
                     if dst_dir:
