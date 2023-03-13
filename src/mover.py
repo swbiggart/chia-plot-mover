@@ -125,13 +125,10 @@ class PlotMover:
 
                 time.sleep(self._config.get('debounce'))
 
-                rysnc = self._config.get('rsync');
-                dst_dir = self._look_for_destination(size)
-
-                if rsync:
+                if rysnc = self._config.get('rsync'):
                     thread = threading.Thread(target=self.rsync_plot, args=(self, src_dir, file, rsync_dir, size, self._lock))
                     thread.start()
-                elif dst_dir:
+                elif dst_dir = self._look_for_destination(size):
                     thread = threading.Thread(target=self.move_plot, args=(self, src_dir, file, dst_dir, size, self._lock))
                     thread.start()
                 else:
