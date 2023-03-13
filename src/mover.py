@@ -106,7 +106,7 @@ class PlotMover:
         sysrsync.run(source=src_path,
              destination=rsync_dir,
              destination_ssh=rsync_host,
-             options=['-a --remove-source-files'])
+             options=['-a', '--remove-source-files'])
         duration = round(time.time() - start, 1)
         speed = (size / duration) // (2 ** 20)
         logger.info(f'Rsync thread: Plot file {src_path} rsync\'d, time: {duration} s, avg speed: {speed} MiB/s')
