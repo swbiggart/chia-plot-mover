@@ -6,8 +6,8 @@ debounce: 2
 source:
   - /source/path
 rsync:
-  - host: chia@farm.lan
-  - dir: /mnt/fast
+  host: chia@farm.lan
+  dir: /mnt/fast
 dest:
   - /destination/path1
   - /destination/path2

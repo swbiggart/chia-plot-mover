@@ -92,19 +92,21 @@ class PlotMover:
         #    raise Exception(f'Copy thread: Plot file {dst_path} already exists. Duplicate?')
 
         logger.info(rsync_config)
+        rsync_host = rsync_config['host'];
+        rsync_dir = rsync_config['dir'];
 
         self._mutex.acquire()
         if rsync_config.dir not in self._lock.dest:
             lock.plot.append(plot_file)
-            lock.dest.append(rsync_config.dir)
+            lock.dest.append(rsync_dir)
         self._mutex.release()
 
-        logger.info(f'Rsync thread: Starting to rsync plot from {src_path} to {rsync_config.host}:{rsync_config.dir}')
+        logger.info(f'Rsync thread: Starting to rsync plot from {src_path} to {rsync_host}:{rsync_dir}')
         start = time.time()
         shutil.move(src_path, temp_dst_path)
         sysrsync.run(source=src_path,
-             destination=dest_path,
-             destination_ssh=rsync_config.host,
+             destination=rsync_dir,
+             destination_ssh=rsync_host,
              options=['-a --remove-source-files'])
         duration = round(time.time() - start, 1)
         speed = (size / duration) // (2 ** 20)
