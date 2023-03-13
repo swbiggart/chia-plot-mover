@@ -7,6 +7,7 @@ authors = ["Maksym Leonov <maxbanton@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 PyYAML = "^5.4.1"
+sysrsync = "^1.1.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.9.2"

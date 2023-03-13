@@ -1,8 +1,11 @@
 import os
 import shutil
+import sysrsync
 import threading
 import time
 from typing import Dict, List
+
+
 
 import yaml
 
@@ -80,6 +83,34 @@ class PlotMover:
         lock.plot.remove(plot_file)
         lock.dest.remove(dst_dir)
 
+    @staticmethod
+    def rsync_plot(self, src_dir, plot_file, rsync_config, size, lock):
+        src_path = os.path.join(src_dir, plot_file)
+
+        # TODO: check for file in rsync?
+        #if os.path.isfile(dst_path):
+        #    raise Exception(f'Copy thread: Plot file {dst_path} already exists. Duplicate?')
+
+        self._mutex.acquire()
+        if rsync_config.dir not in self._lock.dest:
+            lock.plot.append(plot_file)
+            lock.dest.append(rsync_config.dir)
+        self._mutex.release()
+
+        logger.info(f'Rsync thread: Starting to rsync plot from {src_path} to {rsync_config.host}:{rsync_config.dir}')
+        start = time.time()
+        shutil.move(src_path, temp_dst_path)
+        sysrsync.run(source=src_path,
+             destination=dest_path,
+             destination_ssh=rsync_config.host,
+             options=['-a --remove-source-files'])
+        duration = round(time.time() - start, 1)
+        speed = (size / duration) // (2 ** 20)
+        logger.info(f'Rsync thread: Plot file {src_path} rsync\'d, time: {duration} s, avg speed: {speed} MiB/s')
+
+        lock.plot.remove(plot_file)
+        lock.dest.remove(rsync_config.dir)
+
     def main(self):
         while True:
             plots = self._look_for_plots()
@@ -94,9 +125,13 @@ class PlotMover:
 
                 time.sleep(self._config.get('debounce'))
 
+                rysnc = self._config.get('rsync');
                 dst_dir = self._look_for_destination(size)
 
-                if dst_dir:
+                if rsync:
+                    thread = threading.Thread(target=self.rsync_plot, args=(self, src_dir, file, rsync_dir, size, self._lock))
+                    thread.start()
+                elif dst_dir:
                     thread = threading.Thread(target=self.move_plot, args=(self, src_dir, file, dst_dir, size, self._lock))
                     thread.start()
                 else:
