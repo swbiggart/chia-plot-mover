@@ -130,7 +130,7 @@ class PlotMover:
                     thread = threading.Thread(target=self.rsync_plot, args=(self, src_dir, file, rsync_dir, size, self._lock))
                     thread.start()
                 else:
-                    dst_dir = self._look_for_destination(size):
+                    dst_dir = self._look_for_destination(size)
                     if dst_dir:
                         thread = threading.Thread(target=self.move_plot, args=(self, src_dir, file, dst_dir, size, self._lock))
                         thread.start()
