@@ -124,10 +124,10 @@ class PlotMover:
                 logger.info(f'Main thread: Found plot {plot_path} of size {size // (2 ** 30)} GiB')
 
                 time.sleep(self._config.get('debounce'))
-                rsync = self._config.get('rsync')
+                rsync_config = self._config.get('rsync')
 
-                if rsync:
-                    thread = threading.Thread(target=self.rsync_plot, args=(self, src_dir, file, rsync_dir, size, self._lock))
+                if rsync_config:
+                    thread = threading.Thread(target=self.rsync_plot, args=(self, src_dir, file, rsync_config, size, self._lock))
                     thread.start()
                 else:
                     dst_dir = self._look_for_destination(size)
