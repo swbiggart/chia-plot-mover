@@ -15,7 +15,7 @@ from src.logger import logger
 
 class PlotMover:
     CONFIG_FILE_NAME = 'config.yaml'
-    MIN_K32_PLOT_SIZE = 108 * 10 ** 9
+    MIN_K32_PLOT_SIZE = 83 * 10 ** 9
 
     _config: Dict
 
